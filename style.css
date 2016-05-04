@@ -1,0 +1,50 @@
+body {
+    font-family: "verdana";
+    margin: 1rem;
+}
+
+h1 {
+    font-size: 1.5rem;
+}
+
+form {
+    width: 250px;
+}
+
+label, input, select, button {
+    display: block;
+    width: 100%;
+}
+label {
+    font-size: 0.75rem;
+}
+
+button {
+    padding: 1rem;
+    border: none;
+}
+
+.save {
+    background-color: hsl(140, 50%, 50%);
+    transition: all 0.2s;
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+.save:hover {
+    background-color: hsl(140, 50%, 60%);
+}
+
+.save-status {
+    display: none;
+}
+
+input, select {
+    margin-bottom: 1rem;
+}
+
+.role-preview {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 1rem;
+}
