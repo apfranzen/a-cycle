@@ -2,12 +2,13 @@
 
 You are making an app for your new company that assigns roles to employees. You'll need to:
 
-* Read a list of roles from an external URL
-* Read a list of employees from an external URL
-* Read values from a text input, checkbox, radio button, and drop down
+* Build a form
+* Read a list from an external URL
+* Read values from a text input and a drop down
 * Send form data to an external URL
 * Respond to change events
-* Responsd to callbacks
+* Manipulate the DOM
+* Respond to callbacks
 * Deploy to a public URL
 
 ## Steps
@@ -27,9 +28,10 @@ You are making an app for your new company that assigns roles to employees. You'
         * `{firstName: "Kyle", lastName: "Coberly", role: 1}`
     * When the result of the `POST` from the save button returns, you should display the resulting `message` should be faded in over 500ms to the `.save-status` paragraph, displayed for 2000ms, and faded out over 500ms.
     * When finished, your form should be able to do this: ![Filled out form](assets/galvanize_personnel_2.png)
-1. If you do it right, the following combinations should return `Success!`
+1. The following combinations should return `Success!`
     * Kyle Coberly, Assassin
     * Danny Fritz, Commando
     * Roberto Ortega, Commando
     * Elana Kopelevich, Siren
     * All other combinations should return `Not quite.`
+1. Deploy your finished code to a public URL
