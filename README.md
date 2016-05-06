@@ -22,7 +22,7 @@ You are making an app for your new company that assigns roles to employees. You'
     * An empty paragraph with the class "save-status"
     * When finished, your form should look like this: ![Basic form](assets/galvanize_personnel_1.png)
 1. Using the included `app.js` file, add the following behavior
-    * The list of roles in the dropdown menu should be pulled from [this API]("https://secure-eyrie-78012.herokuapp.com/roles") and appended to your drop-down
+    * The list of roles in the dropdown menu should be pulled from [this API](https://secure-eyrie-78012.herokuapp.com/roles) and appended to your drop-down
     * Whenever the role is changed, the image should be updated with the `imageURL` of that role
     * Whenever the save button is clicked, *the default behavior should be prevented*, and the form values should be `POST`ed to `https://secure-eyrie-78012.herokuapp.com/users` in the following format:
         * `{firstName: "Kyle", lastName: "Coberly", role: 1}`
