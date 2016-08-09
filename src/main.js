@@ -42,6 +42,7 @@ function getBStationInfo() {
 
       var lonB = (bStationInfo.data.stations[i].lon);
       bcycleLocationLat = latB;
+
       bcycleLocationLon = lonB;
 
       var stationIdInfo = (bStationInfo.data.stations[i].station_id);
@@ -59,7 +60,7 @@ function getBStationInfo() {
   var bLatLong = new google.maps.LatLng(bcycleLocationLat, bcycleLocationLon);
 
   var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 16,
+    zoom: 13,
     center: myLatLng
   });
 
@@ -92,8 +93,8 @@ function geoFindMe() {
     var latitude  = position.coords.latitude;
     var longitude = position.coords.longitude;
 
-    console.log(latitude);
-    console.log(longitude);
+    // console.log(latitude);
+    // console.log(longitude);
 
     initMap(latitude, longitude);
 
