@@ -1,4 +1,5 @@
 var bcycleLocationLat;
+
 var bcycleLocationLon;
 
 // Your code here!
@@ -41,6 +42,7 @@ function getBStationInfo() {
       var latB = (bStationInfo.data.stations[i].lat);
 
       var lonB = (bStationInfo.data.stations[i].lon);
+
       bcycleLocationLat = latB;
 
       bcycleLocationLon = lonB;
@@ -48,13 +50,21 @@ function getBStationInfo() {
       var stationIdInfo = (bStationInfo.data.stations[i].station_id);
 
       var numDocksAvail = (bStationInfo.data.stations[i].num_docks_available);
+
+      // var marker = new google.maps.Marker({
+      //   position: myLatLng,
+      //   map: map,
+      //   title: 'Hello World!'
+
+      // });
     }
   });
 }
+console.log(bcycleLocationLat);
 
 // Passing in lat and long perameters from geoFindMe
   function initMap(lat, lng) {
-// Passing in lat and long perameters from geoFindMe
+
   var myLatLng = new google.maps.LatLng(lat, lng);
 
   var bLatLong = new google.maps.LatLng(bcycleLocationLat, bcycleLocationLon);
@@ -93,8 +103,8 @@ function geoFindMe() {
     var latitude  = position.coords.latitude;
     var longitude = position.coords.longitude;
 
-    // console.log(latitude);
-    // console.log(longitude);
+    console.log(latitude);
+    console.log(longitude);
 
     initMap(latitude, longitude);
 
