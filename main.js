@@ -162,7 +162,7 @@ function initMap (lat, lng) {
 
 function detClosest(distancesArr) {
   var index = 0;
-  var value = 100;
+  var value = 100000;
 
   for (var i = 0; i < distancesArr.length; i++) {
     if (distancesArr[i].distance < value) {
