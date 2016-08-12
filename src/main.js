@@ -5,6 +5,15 @@ var myLatLng;
 var nearestLatLon;
 var map;
 
+var allMarkers = []
+var getMarker = function (lat, lng){
+  allMarkers.forEach(function(el){
+    if(el.getPosition().lat() == lat && el.getPosition().lng() == lng){
+      el.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  })
+}
+
 // jquery
 $(document).ready(function() {
   $('.progress').animate({ width: '100%' }, 4000);
@@ -134,7 +143,7 @@ function initMap (lat, lng) {
   // return the marker from mapMarker
 
   function mapMarker (map, coordinates, name) {
-    new google.maps.Marker({
+    var currMarker = new google.maps.Marker({
       position: coordinates,
       map: map,
       title: name,
@@ -142,6 +151,7 @@ function initMap (lat, lng) {
     });
     var myLatLng = new google.maps.LatLng(lat, lng);
     var distanceArray = distanceAway(coordinates, myLatLng, name, numBikesAvail);
+    allMarkers.push(currMarker);
   }
 
   function distanceAway(stationLoc, userLocation, name, numBikesAvail) {
@@ -184,6 +194,8 @@ function detClosest(distancesArr) {
     strokeOpacity:0.65,
     strokeWeight:8
   });
+
+  getMarker(distancesArr[index].stationLatLon.lat(), distancesArr[index].stationLatLon.lng());
 
   flightPath.setMap(map);
   // var nearMile = value;
