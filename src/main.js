@@ -5,14 +5,14 @@ var myLatLng;
 var nearestLatLon;
 var map;
 
-var allMarkers = []
+var allMarkers = [];
 var getMarker = function (lat, lng){
   allMarkers.forEach(function(el){
     if(el.getPosition().lat() == lat && el.getPosition().lng() == lng){
       el.setAnimation(google.maps.Animation.BOUNCE);
     }
-  })
-}
+  });
+};
 
 // jquery
 $(document).ready(function() {
