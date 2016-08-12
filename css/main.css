@@ -1,9 +1,119 @@
 /* add custom styles */
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
+  position: relative;
+  z-index: 0;
 }
+
+logo {
+  text-align: center;
+}
+
+h1 {
+  margin-top: 5px;
+  font-family: 'Yellowtail', cursive;
+  font-size: 100px;
+}
+
+.station {
+  /*opacity: .5;*/
+  border-radius: 25px;
+  border-style: solid;
+  border-color: #212478;
+  border-width: thick;
+  background-color: #f2f2f2;
+  /*background-color: green;*/
+  width: 90%;
+  margin-top: 32px;
+  /*padding: 12px;*/
+}
+
+#myDivId{
+    background:red;
+    color:white;
+    padding:10px;
+    overflow:hidden;
+    position:relative;
+}
+
+.content{
+    z-index:9;
+    position:relative;
+}
+.progress{
+    z-index;1;
+    width:0px;
+    position:relative;
+    background:#212478;
+    left:0px;
+    top:0px;
+    margin:0;
+    border-radius: 25px;
+}
+
+.container {
+  padding:0;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0px;
+  font-size: 28px;
+  color:  #212478;
+}
+.bold {
+  font-weight:800;
+  font-size: 42px;
+}
+
+.left {
+  float: left;
+}
+.left p, .left p {
+  max-width: 500px;
+  display: inline-block;
+}
+p span {
+
+}
+.right {
+  float: right;
+  clear: left;
+}
+.clear {
+  display: block;
+  clear: both;
+}
+
 #map {
-  height: 100%;
+  margin-top: 32px;
+  height: 600px;
 }
+
+/*#repeat {
+  background-repeat: repeat;
+}*/
+
+.background {
+  background-repeat: repeat;
+  background-image: url(https://lh4.ggpht.com/q1rTJ6jzXU-W5eEMp8E0MgBGkVWSrV9NG0ncQ5Tu4WZmHxqpRKZugqtdDP2jlpJnJ_M=w300);
+  height: 100vh;
+  opacity: .15;
+  background-position: center;
+}
+
+main {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  max-width: 960px;
+  height: 60px;
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+/*img {
+  opacity: 0.5;
+}*/
