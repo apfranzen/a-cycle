@@ -1,4 +1,4 @@
-// global
+  // global
 var stations;
 var distances = [];
 var myLatLng;
@@ -24,6 +24,7 @@ $(document).ready(function() {
 Promise.all([getBStatus(), getBInfo()])
   .then(mergeResponses)
   .then(addGoogleMapsScript);
+  console.log(getBStatus);
 
 function mergeResponses (responses) {
 
@@ -209,7 +210,8 @@ function detClosest(distancesArr) {
 
 function geoFindMe() {
 
-  console.log('stations', stations);
+  console.log('stations', stations.length);
+
 
   var output = document.getElementById('out');
 
