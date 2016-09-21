@@ -37,15 +37,11 @@ function mergeResponses (responses) {
   var combinedStationsObj = {};
 
   for (var i = 0; i < stationsPathStatus.length; i++) {
-    var numBikesAvailKey = Object.keys(stationsPathStatus[i])[1];
-    var numStationsAvailKey = Object.keys(stationsPathStatus[i])[2];
-    var isRentingKey = Object.keys(stationsPathStatus[i])[4];
-    var isReturningKey = Object.keys(stationsPathStatus[i])[5];
     combinedStationsObj[stationsPathStatus[i].station_id] = {
-      numBikesAvailKey: stationsPathStatus[i].num_bikes_available,
-      numStationsAvailKey: stationsPathStatus[i].num_docks_available,
-      isRentingKey: stationsPathStatus[i].is_renting,
-      isReturningKey: stationsPathStatus[i].is_returning
+      num_bikes_available: stationsPathStatus[i].num_bikes_available,
+      num_docks_available: stationsPathStatus[i].num_docks_available,
+      is_renting: stationsPathStatus[i].is_renting,
+      is_returning: stationsPathStatus[i].is_returning
     };
   }
 
