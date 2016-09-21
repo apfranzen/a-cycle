@@ -24,7 +24,6 @@ $(document).ready(function() {
 Promise.all([getBStatus(), getBInfo()])
   .then(mergeStationsObj)
   .then(addGoogleMapsScript);
-  console.log(getBStatus);
 
 function mergeStationsObj (stationsObj) {
 
@@ -90,17 +89,34 @@ function addGoogleMapsScript () {
 
 // Passing in lat and lon perameters from geoFindMe
 
-function initMap (lat, lng) {
-
+function newMap (lat, lng) {
   myLatLng = new google.maps.LatLng(lat, lng);
   map = new google.maps.Map(document.getElementById('map'), {
     zoom: 16,
     center: myLatLng
   });
+  return map;
+}
 
-  // instead of a for loop, use map
-  // var markers = stations.map(...);
-  // markers.forEach(... )
+function newMarker(pos,map,title,icon,numBikesAvail) {
+  var marker = new google.maps.Marker({
+    position: pos,
+    map: map,
+    title: title,
+    icon: icon
+  });
+  distanceAway(pos, map, title, numBikesAvail);
+
+  return marker;
+}
+var greenMarker = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+var blueMarker = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+
+function initMap (lat, lng) {
+
+  var myLatLng = new google.maps.LatLng(lat, lng);
+  var map = newMap(lat,lng);
+  var marker = newMarker(myLatLng, map,'Current Location', greenMarker);
 
   for (var station in stations) {
     var latitude = (stations[station].lat);
@@ -111,15 +127,6 @@ function initMap (lat, lng) {
     mapMarker(map, coordinates, name);
   }
 
-  var marker = new google.maps.Marker({
-    position: myLatLng,
-    map: map,
-    title: 'Current Location',
-    icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-  });
-
-  // marker.setMap(map);
-  //
   var infowindow = new google.maps.InfoWindow({
     content:'Your current location'
   });
@@ -128,17 +135,17 @@ function initMap (lat, lng) {
 
   // return the marker from mapMarker
 
-  function mapMarker (map, coordinates, name) {
-    var currMarker = new google.maps.Marker({
-      position: coordinates,
-      map: map,
-      title: name,
-      icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-    });
-    var myLatLng = new google.maps.LatLng(lat, lng);
-    var distanceArray = distanceAway(coordinates, myLatLng, name, numBikesAvail);
-    allMarkers.push(currMarker);
-  }
+  // function mapMarker (map, coordinates, name) {
+  //   var currMarker = new google.maps.Marker({
+  //     position: coordinates,
+  //     map: map,
+  //     title: name,
+  //     icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+  //   });
+  //   var myLatLng = new google.maps.LatLng(lat, lng);
+  //   var distanceArray = distanceAway(coordinates, myLatLng, name, numBikesAvail);
+  //   allMarkers.push(currMarker);
+  // }
 
   function distanceAway(stationLoc, userLocation, name, numBikesAvail) {
 
@@ -191,26 +198,12 @@ function detClosest(distancesArr) {
 
 }
 
-// Retrieve user location
+// Retrieve user current location
 
 function geoFindMe() {
-
-  console.log('stations', stations.length);
-
-
-  var output = document.getElementById('out');
-
-  if (!navigator.geolocation) {
-    output.innerHTML = '<p>Geolocation is not supported by your browser</p>';
-    return;
-  }
-
   function success(position) {
     var latitude  = position.coords.latitude;
     var longitude = position.coords.longitude;
-
-    console.log(latitude);
-    console.log(longitude);
 
     initMap(latitude, longitude);
   }
@@ -218,8 +211,6 @@ function geoFindMe() {
   function error() {
     output.innerHTML = 'Unable to retrieve your location';
   }
-
-  // output.innerHTML = "<p>Locating…</p>";
 
   navigator.geolocation.getCurrentPosition(success, error);
 }
