@@ -22,45 +22,34 @@ $(document).ready(function() {
 // promises.all returns an array with all data from each AJAX call
 
 Promise.all([getBStatus(), getBInfo()])
-  .then(mergeResponses)
+  .then(mergeStationsObj)
   .then(addGoogleMapsScript);
   console.log(getBStatus);
 
-function mergeResponses (responses) {
+function mergeStationsObj (stationsObj) {
 
-  var statusResponse = responses[0];
-  var locationResponse = responses[1];
+  var stationStatuses = stationsObj[0].data.stations;
+  var stationInfos = stationsObj[1].data.stations;
 
-  // creating a new object with status information
-
-  var stationsPathStatus = statusResponse.data.stations;
+  // creating a new object with status information forEach station
   var combinedStationsObj = {};
 
-  for (var i = 0; i < stationsPathStatus.length; i++) {
-    combinedStationsObj[stationsPathStatus[i].station_id] = {
-      num_bikes_available: stationsPathStatus[i].num_bikes_available,
-      num_docks_available: stationsPathStatus[i].num_docks_available,
-      is_renting: stationsPathStatus[i].is_renting,
-      is_returning: stationsPathStatus[i].is_returning
+  stationStatuses.forEach(function(stationStatus) {
+    combinedStationsObj[stationStatus.station_id] = {
+        num_bikes_available: stationStatus.num_bikes_available,
+        num_docks_available: stationStatus.num_docks_available,
+        is_renting: stationStatus.is_renting,
+        is_returning: stationStatus.is_returning
     };
-  }
+  });
 
-  // adding info to the already created station object
+  stationInfos.forEach(function(stationInfo) {
+    var key = stationInfo.station_id;
 
-  var stationsFromInfo = locationResponse.data.stations;
-
-  for (var j = 0; j < stationsFromInfo.length; j++) {
-
-    var key = stationsFromInfo[j].station_id;
-    var lonVal = stationsFromInfo[j].lon;
-    var latVal = stationsFromInfo[j].lat;
-    var nameVal = stationsFromInfo[j].name;
-
-    combinedStationsObj[key].lat = latVal;
-    combinedStationsObj[key].lon = lonVal;
-    combinedStationsObj[key].name = nameVal;
-
-  }
+    combinedStationsObj[key].lat = stationInfo.lat;
+    combinedStationsObj[key].lon = stationInfo.lon;
+    combinedStationsObj[key].name = stationInfo.name;
+  });
 
   stations = combinedStationsObj;
 
