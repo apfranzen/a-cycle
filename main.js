@@ -26,34 +26,34 @@ Promise.all([getBStatus(), getBInfo()])
   .then(mergeStationsObj)
   .then(addGoogleMapsScript);
 
-function mergeStationsObj (stationsObj) {
-  console.log('stationsObj: ', stationsObj);
+function mergeStationsObj (stationsArr) {
+  console.log('stationsArr: ', stationsArr);
 
-  var stationStatuses = stationsObj[0].data.stations;
-  var stationInfos = stationsObj[1].data.stations;
+  var stationStatuses = stationsArr[0].data.stations;
+  var stationInfos = stationsArr[1].data.stations;
+
+  var combinedStationsArr = [];
+
+  for (var i = 0; i < stationStatuses.length; i++) {
+
+    combinedStationsArr.push(
+    {
+          station_id: stationStatuses[i].station_id,
+          num_bikes_available: stationStatuses[i].num_bikes_available,
+          num_docks_available: stationStatuses[i].num_docks_available,
+          is_renting: stationStatuses[i].is_renting,
+          is_returning: stationStatuses[i].is_returning,
+          lat : stationInfos[i].lat,
+          lon : stationInfos[i].lon,
+          name : stationInfos[i].name
+
+  });
+}
+
 
   // creating a new object with status information forEach station
-  var combinedStationsObj = {};
 
-  stationStatuses.forEach(function(stationStatus) {
-    combinedStationsObj[stationStatus.station_id] = {
-        num_bikes_available: stationStatus.num_bikes_available,
-        num_docks_available: stationStatus.num_docks_available,
-        is_renting: stationStatus.is_renting,
-        is_returning: stationStatus.is_returning
-    };
-  });
-
-  stationInfos.forEach(function(stationInfo) {
-    var key = stationInfo.station_id;
-
-    combinedStationsObj[key].lat = stationInfo.lat;
-    combinedStationsObj[key].lon = stationInfo.lon;
-    combinedStationsObj[key].name = stationInfo.name;
-  });
-
-  stations.push(combinedStationsObj);
-
+  console.log('combinedStationsArr: ', combinedStationsArr);
 }
 
 function getBStatus() {
