@@ -3,8 +3,8 @@ var stations = [];
 var stationLocal = [];
 var distances = [];
 var currentLocation;
-var nearestLatLon;
 var map;
+var combinedStationsArr;
 
 var allMarkers = [];
 var getMarker = function (lat, lng){
@@ -32,23 +32,24 @@ function mergeStationsObj (stationsArr) {
   var stationStatuses = stationsArr[0].data.stations;
   var stationInfos = stationsArr[1].data.stations;
 
-  var combinedStationsArr = [];
+  combinedStationsArr = [];
 
-  for (var i = 0; i < stationStatuses.length; i++) {
+    for (var i = 0; i < stationStatuses.length; i++) {
 
-    combinedStationsArr.push(
-    {
-          station_id: stationStatuses[i].station_id,
-          num_bikes_available: stationStatuses[i].num_bikes_available,
-          num_docks_available: stationStatuses[i].num_docks_available,
-          is_renting: stationStatuses[i].is_renting,
-          is_returning: stationStatuses[i].is_returning,
-          lat : stationInfos[i].lat,
-          lon : stationInfos[i].lon,
-          name : stationInfos[i].name
+      combinedStationsArr.push(
+      {
+            station_id: stationStatuses[i].station_id,
+            num_bikes_available: stationStatuses[i].num_bikes_available,
+            num_docks_available: stationStatuses[i].num_docks_available,
+            is_renting: stationStatuses[i].is_renting,
+            is_returning: stationStatuses[i].is_returning,
+            lat: stationInfos[i].lat,
+            lon: stationInfos[i].lon,
+            name: stationInfos[i].name,
+            distanceAway: distanceAway(stationInfos[i].lat, stationInfos[i].lon)
 
-  });
-}
+      });
+    }
 
 
   // creating a new object with status information forEach station
@@ -83,6 +84,7 @@ function getBInfo() {
 }
 
 function addGoogleMapsScript () {
+  console.log('addGoogleMapsScript');
   var s = document.createElement('script');
   s.type = 'text/javascript';
   s.src  = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDzaOBIjmRJeiSfhiXhPC4Wo4syHsQG_hc&callback=geoFindMe&libraries=geometry';
@@ -99,40 +101,42 @@ function newMap (currentLocation) {
   return map;
 }
 
-// function newMarker(stationLatLng,map,title,icon,numBikesAvail,name,isReturning,callback) {
-//   console.log('isReturning: ', isReturning);
-//   stationLocal.push(new google.maps.Marker({
-//     position: stationLatLng || null,
-//     map: map || null,
-//     title: title || null,
-//     bikesAvail: numBikesAvail || null,
-//     name: name || null,
-//     isReturning: isReturning || null,
-//     distance: distanceAway(stationLatLng, currentLocation) || null,
-//     icon: icon || null
-//   }))
-// }
-
-// function newMarker(stationLatLng,map,title,icon,numBikesAvail,name,isReturning,callback)
-
 function newMarker(stationLatLng,map,title,icon) {
   new google.maps.Marker({
     position: stationLatLng || null,
     map: map || null,
     title: title || null,
-    // bikesAvail: numBikesAvail || null,
-    // name: name || null,
-    // isReturning: isReturning || null,
-    // distance: distanceAway(stationLatLng, currentLocation) || null,
     icon: icon || null
   });
 }
 
-function distanceAway(stationLatLng, userLocation) {
+// function distanceAway(nearestLatLon, userLocation) {
+//
+//   console.log('nearestLatLon: ', nearestLatLon);
+//   console.log('currentLocation: ', currentLocation);
+//
+//   return parseFloat((google.maps.geometry.spherical.computeDistanceBetween(
+//     nearestLatLon, currentLocation) * 0.000621371).toFixed(2));
+//
+// }
 
-  return parseFloat((google.maps.geometry.spherical.computeDistanceBetween(
-    stationLatLng, userLocation) * 0.000621371).toFixed(2));
+function distanceAway (lat, lon, unit) {
+  console.log('lat: ', lat);
+  console.log('lon: ', lon);
+  console.log('currentLocation.lat: ', currentLocation.lat);
+  console.log('currentLocation.lng: ', currentLocation.lng);
 
+	var radlat1 = Math.PI * lat/180
+	var radlat2 = Math.PI * currentLocation.lat/180
+	var theta = lon-currentLocation.lng
+	var radtheta = Math.PI * theta/180
+	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+	dist = Math.acos(dist)
+	dist = dist * 180/Math.PI
+	dist = dist * 60 * 1.1515
+	if (unit=="K") { dist = dist * 1.609344 }
+	if (unit=="N") { dist = dist * 0.8684 }
+	return parseFloat(dist.toFixed(2));
 }
 
 
@@ -141,6 +145,8 @@ var greenMarker = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
 var blueMarker = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 
 function initMap (currentLocation) {
+
+  console.log('init map hit');
 
   var map = newMap(currentLocation);
   var marker = newMarker(currentLocation, map,'Current Location');
@@ -157,50 +163,44 @@ function initMap (currentLocation) {
   //   title: 'Hello World!'
   // });
 
-  console.log('stationLocal: ', stationLocal);
 
-  for (var station in stations) {
-    var name = (stations[station].name);
-    var numBikesAvail =  (stations[station].num_bikes_available);
-    var isReturning =  (stations[station].is_returning) === 1 ? true : false;
-    var stationLatLng = { lat: stations[station].lat, lng: stations[station].lon };
-    newMarker(stationLatLng, map, 'station', greenMarker);
-  }
+  combinedStationsArr.forEach(function(station) {
+    var name = (station.name);
+    var numBikesAvail =  (station.num_bikes_available);
+    var isReturning =  (station.is_returning) === 1 ? true : false;
+    var stationLatLng = { lat: station.lat, lng: station.lon };
+    newMarker(stationLatLng, map, name, greenMarker);
+  })
 
-  console.log('stations: ', stations[0]);
   detClosest(map);
-
 
 }
 
 function detClosest(map) {
+
+  // var distanceArray
 
 
 
   var index = 0;
   var value = 100000;
 
-  for (var i = 0; i < stations[0].length; i++) {
-    if (stations[0][i].distance < value && stations[0][i].distance > 0) {
-      value = stations[0][i].distance;
-      index = i;
+  combinedStationsArr.forEach(function(station, index) {
+    if (station.distance < value && station.distance > 0) {
+      value = station.distance;
+      index = index;
     }
-  }
+  })
 
-  var nearStationName = stations[0][index].name;
-  var nearestDistance = stations[0][index].distance;
-  var nearestLatLon = new google.maps.LatLng(stations[0][index].lat, stations[0][index].lon);
+  var nearStationName = combinedStationsArr[index].name;
+  var nearestDistance = combinedStationsArr[index].distance;
+  var nearestLatLon = {lat: combinedStationsArr[index].lat, lng: combinedStationsArr[index].lon};
+  // var nearestLatLon = new google.maps.LatLng(combinedStationsArr[index].lat, combinedStationsArr[index].lon);
 
-  console.log('nearestStationName: ', nearStationName);
-
-  console.log('current location: ', currentLocation, 'nearestLatLon: ', nearestLatLon);
-
-  // var pathTo = [currentLocation, nearestLatLon];
   var pathTo = [
-    {lat: 37.772, lng: -122.214},
-    {lat: 21.291, lng: -157.821}
+    currentLocation,
+    nearestLatLon
   ]
-  console.log(pathTo);
 
   var flightPath = new google.maps.Polyline({
     path:pathTo,
@@ -208,8 +208,6 @@ function detClosest(map) {
     strokeOpacity:0.65,
     strokeWeight:8
   });
-
-  // getMarker(distancesArr[index].stationLatLon.lat(), distancesArr[index].stationLatLon.lng());
 
   flightPath.setMap(map);
   // var nearMile = value;
@@ -223,9 +221,11 @@ function detClosest(map) {
 
 function geoFindMe() {
   function success(position) {
+    console.log('hit geo findMe');
     var lat  = position.coords.latitude;
     var lng = position.coords.longitude;
-    currentLocation = {lat: lat, lng: lng}
+    currentLocation = {lat: lat, lng: lng};
+    console.log('lat: ', lat);
 
     initMap(currentLocation);
   }
