@@ -18,13 +18,24 @@ var getMarker = function (lat, lng){
 // jquery
 $(document).ready(function() {
   $('.progress').animate({ width: '100%' }, 4000);
+
+  geoFindMe().then(promise => console.log(promise));
+
+  // promise.then(function(result) {
+  // console.log(result); // "Stuff worked!"
+  // }, function(err) {
+  //   console.log(err); // Error: "It broke"
+  // });
 });
 
 // promises.all returns an array with all data from each AJAX call
 
-Promise.all([getBStatus(), getBInfo()])
-  .then(mergeStationsObj)
-  .then(addGoogleMapsScript);
+Promise.all([getBStatus(), getBInfo(), geoFindMe()])
+    // .then(geoFindMe)
+    // console.log(stationInfo);
+    .then(mergeStationsObj)
+    // .then(addGoogleMapsScript);
+
 
 function mergeStationsObj (stationsArr) {
   console.log('stationsArr: ', stationsArr);
@@ -53,7 +64,7 @@ function mergeStationsObj (stationsArr) {
 
 
   // creating a new object with status information forEach station
-
+  return combinedStationsArr
   console.log('combinedStationsArr: ', combinedStationsArr);
 }
 
@@ -83,13 +94,13 @@ function getBInfo() {
   });
 }
 
-function addGoogleMapsScript () {
-  console.log('addGoogleMapsScript');
-  var s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.src  = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDzaOBIjmRJeiSfhiXhPC4Wo4syHsQG_hc&callback=geoFindMe&libraries=geometry';
-  $('head').append(s);
-}
+// function addGoogleMapsScript () {
+//   console.log('addGoogleMapsScript');
+//   var s = document.createElement('script');
+//   s.type = 'text/javascript';
+//   s.src  = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDzaOBIjmRJeiSfhiXhPC4Wo4syHsQG_hc&libraries=geometry';
+//   $('head').append(s);
+// }
 
 // Passing in lat and lon perameters from geoFindMe
 
@@ -180,8 +191,6 @@ function detClosest(map) {
 
   // var distanceArray
 
-
-
   var index = 0;
   var value = 100000;
 
@@ -220,19 +229,40 @@ function detClosest(map) {
 // Retrieve user current location
 
 function geoFindMe() {
-  function success(position) {
-    console.log('hit geo findMe');
-    var lat  = position.coords.latitude;
-    var lng = position.coords.longitude;
-    currentLocation = {lat: lat, lng: lng};
-    console.log('lat: ', lat);
-
-    initMap(currentLocation);
-  }
-
-  function error() {
-    output.innerHTML = 'Unable to retrieve your location';
-  }
-
-  navigator.geolocation.getCurrentPosition(success, error);
+  return new Promise(function(resolve, reject) {
+  // do a thing, possibly async, then…
+    return navigator.geolocation.getCurrentPosition(function(position) {
+      if(position){
+        resolve(position);
+      }
+      else {
+        console.log('not working');
+        reject('Not working')
+      }
+      console.log(position);
+        // resolve('success');
+    })
+  });
 }
+
+
+// return new Promise(
+//   function geoFindMe(stationInfo) {
+//   console.log('geoFindMe found');
+//   function success(position) {
+//     console.log('hit geo findMe');
+//     var lat  = position.coords.latitude;
+//     var lng = position.coords.longitude;
+//     currentLocation = {lat: lat, lng: lng};
+//     console.log('lat: ', lat);
+//
+//     resolve(currentLocation);
+//   }
+//
+//   function error() {
+//     output.innerHTML = 'Unable to retrieve your location';
+//     reject(output.innerHTML)
+//   }
+//
+//   navigator.geolocation.getCurrentPosition();
+// })
