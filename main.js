@@ -44,6 +44,7 @@ function mergeStationsObj (masterData) {
               is_returning: stationStatuses[i].is_returning,
               lat: stationInfos[j].lat,
               lon: stationInfos[j].lon,
+              closestToUser: false,
               name: stationInfos[j].name,
               currentLat: currentLocation.latitude,
               currentLng: currentLocation.longitude,
@@ -112,6 +113,7 @@ function newMarker(latLng,map,title,icon,options) {
   if (title === 'Current Location') {
     infowindow.open(map,marker);
   }
+  marker.setAnimation(google.maps.Animation.BOUNCE);
 }
 
 function distanceAway (lat1, lon1, lat2, lon2, unit) {
@@ -170,6 +172,14 @@ function detClosest(combinedStationsArr) {
   var nearestIndex = 0;
   var nearestDistance = 100;
   var nearestStationName = combinedStationsArr[nearestIndex].name;
+
+function test2() {
+  return combinedStationsArr.reduce((prev, curr) => {
+    return prev.distanceAway < curr.distanceAway ? prev : curr;
+  });
+}
+
+console.log(test2().distanceAway);
 
   combinedStationsArr.forEach(function(station, index) {
     if (station.distanceAway < nearestDistance && station.num_bikes_available > 0) {
