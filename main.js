@@ -142,8 +142,8 @@ function initMap (combinedStationsArr) {
     var closestToUser = station.closestToUser;
     var isReturning = (station.is_returning) === 1 ? 'Yes' : 'False'
     var stationData =
+    "<h4> Station Name: "  + station.name + "</h4>" +
     "<ul>" +
-      "<li><h4> Station Name: "  + station.name + "</h4></li>" +
       "<li> Number of Bikes Available: " + station.num_bikes_available + "</li>" +
       "<li> Is Station Returning? " + isReturning + "</li>" +
     "</ul>"
