@@ -17,9 +17,9 @@ $(document).ready(function() {
 
 Promise.all([getBStatus(), getBInfo(), geoFindMe()])
     .then(mergeStationsObj)
-    .then(initMap)
     .then(detClosest)
-    .then(flightPath)
+    .then(initMap)
+
 
 function mergeStationsObj (masterData) {
   console.log('masterData: ', masterData);
@@ -94,7 +94,7 @@ function newMap (currentLocation) {
   return map;
 }
 
-function newMarker(latLng,map,title,icon,options) {
+function newMarker(latLng,map,title,icon,options,closest,userLatLng) {
   var marker = new google.maps.Marker({
     position: latLng,
     map: map,
@@ -113,7 +113,11 @@ function newMarker(latLng,map,title,icon,options) {
   if (title === 'Current Location') {
     infowindow.open(map,marker);
   }
-  marker.setAnimation(google.maps.Animation.BOUNCE);
+
+  if (closest === true) {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    flightPath(latLng, userLatLng)
+  }
 }
 
 function distanceAway (lat1, lon1, lat2, lon2, unit) {
@@ -151,6 +155,8 @@ function initMap (combinedStationsArr) {
 
     var name = station.name;
     var stationLatLng = { lat: station.lat, lng: station.lon };
+    var userLatLng = { lat: station.currentLat, lng: station.currentLng };
+    var closestToUser = station.closestToUser;
     var isReturning = (station.is_returning) === 1 ? 'Yes' : 'False'
     var stationData =
     "<ul>" +
@@ -159,7 +165,7 @@ function initMap (combinedStationsArr) {
       "<li> Is Station Returning? " + isReturning + "</li>" +
     "</ul>"
 
-    newMarker(stationLatLng, map, name, greenMarker, stationData);
+    newMarker(stationLatLng, map, name, greenMarker, stationData, closestToUser, userLatLng);
 
   })
 
@@ -168,18 +174,11 @@ function initMap (combinedStationsArr) {
 }
 
 function detClosest(combinedStationsArr) {
+
   console.log(combinedStationsArr);
   var nearestIndex = 0;
   var nearestDistance = 100;
   var nearestStationName = combinedStationsArr[nearestIndex].name;
-
-function test2() {
-  return combinedStationsArr.reduce((prev, curr) => {
-    return prev.distanceAway < curr.distanceAway ? prev : curr;
-  });
-}
-
-console.log(test2().distanceAway);
 
   combinedStationsArr.forEach(function(station, index) {
     if (station.distanceAway < nearestDistance && station.num_bikes_available > 0) {
@@ -187,21 +186,11 @@ console.log(test2().distanceAway);
       nearestIndex = index;
     }
   })
-
-  var currentLatLng = {
-  lat: combinedStationsArr[nearestIndex].currentLat,
-  lng: combinedStationsArr[nearestIndex].currentLng
-  }
-  var nearestLatLng = {
-    lat: combinedStationsArr[nearestIndex].lat,
-    lng: combinedStationsArr[nearestIndex].lon
-  }
-
-
+  // change the value of closestToUser to true
+  combinedStationsArr[nearestIndex].closestToUser = true;
+  console.log('detClosest hit');
   appendHTML(nearestDistance, nearestStationName);
-  flightPath(currentLatLng, nearestLatLng);
-
-  return combinedStationsArr;
+  return combinedStationsArr
 }
 
 function appendHTML(nearestDistance, nearestStationName) {
@@ -211,7 +200,9 @@ function appendHTML(nearestDistance, nearestStationName) {
   $('.progress').remove();
 }
 
-function flightPath(currentLatLng, nearestLatLng) {
+function flightPath(nearestLatLng, currentLatLng) {
+  console.log('nearestLatLng', nearestLatLng);
+  console.log('currentLatLng ', currentLatLng);
 
   var pathTo = [
     currentLatLng,
@@ -219,7 +210,7 @@ function flightPath(currentLatLng, nearestLatLng) {
   ]
 
   var flightPath = new google.maps.Polyline({
-    path:pathTo,
+    path: pathTo,
     strokeColor:'#BB2034',
     strokeOpacity:0.65,
     strokeWeight:8
