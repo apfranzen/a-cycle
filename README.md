@@ -1,4 +1,4 @@
-# 🚲 Welcome to the *a-cycle* Github Repository!🚲
+# 🚲 Welcome to the *a-cycle* Github Repository! 🚲
 
 
 [Visit the Deployed Website](https://bcycle-app.firebaseapp.com/)
